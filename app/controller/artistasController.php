@@ -13,12 +13,12 @@ class artistasController
         $this->model = new artistasModel();
         $this->view = new artistasView();
 
-         // lee el body del request
-         $this->data = file_get_contents("php://input");
-
+        // lee el body del request
+        $this->data = file_get_contents("php://input");
     }
 
-    private function getData() {
+    private function getData()
+    {
         /* Descodificación de los datos del cuerpo de la solicitud. */
         return json_decode($this->data);
     }
@@ -26,67 +26,66 @@ class artistasController
 
     public function getArtistas($params = null)
     {
-        /* Está convirtiendo el valor de valor y order a minúsculas. */
-        //var_dump($_GET['sort']);
-        
-        if(!empty($_GET['sort'])&&!empty($_GET['order'])){
-            $sort =strtolower( $_GET['sort']);
-            $order=strtolower($_GET['order']);
-                var_dump($sort);
-                var_dump($order);
-            $artistas = $this->model->getAll($sort,$order);
 
-            
-            
-        }else if(empty($_GET['sort'])&&!empty($_GET['order'])){
-            $order=strtolower($_GET['order']);
-            var_dump($order);
-            $artistas = $this->model->getAll(null,$order);
-        }else{
-            $artistas = $this->model->getAll();
+        try {
+            if (!empty($_GET['sort']) && !empty($_GET['order'])) {
+                $sort = strtolower($_GET['sort']);
+                $order = strtolower($_GET['order']);
+                $artistas = $this->model->getAll($sort, $order);
+            } else if (empty($_GET['sort']) && !empty($_GET['order'])) {
+                $order = strtolower($_GET['order']);
+                var_dump($order);
+                $artistas = $this->model->getAll(null, $order);
+            } else if (!empty($_GET['sort']) && empty($_GET['order'])) { //por defecto imprime por campo en orden
+                $sort = strtolower($_GET['sort']);
+                $order = "asc";
+                $artistas = $this->model->getAll($sort, $order);
+            } else {
+                $artistas = $this->model->getAll();
+            }
+            $this->view->response($artistas);
+        } catch (Exception $e) {
+            $this->view->response("Inserte valores validos", 400);
         }
-        $this->view->response($artistas);
     }
 
-    public function getArtista($params = null){
+    public function getArtista($params = null)
+    {
         $id = $params[':ID'];
         $artista = $this->model->get($id);
 
         // si no existe devuelvo 404
         if ($artista)
             $this->view->response($artista);
-        else 
+        else
             $this->view->response("La tarea con el id=$id no existe", 404);
-
-
     }
-   
 
-    public function addArtistas($params = null){//Funcion para agregar artistas
+
+    public function addArtistas($params = null)
+    { //Funcion para agregar artistas
         $artista = $this->getData();
-        if(empty($artista->nombre_artista) || empty($artista->fecha_nacimiento) || empty($artista->nacionalidad) || empty($artista->informacion)) {
+        if (empty($artista->nombre_artista) || empty($artista->fecha_nacimiento) || empty($artista->nacionalidad) || empty($artista->informacion)) {
             $this->view->response("Complete los campos", 400);
-        }
-        else {
+        } else {
 
             $id = $this->model->insert($artista->nombre_artista, $artista->fecha_nacimiento, $artista->nacionalidad, $artista->informacion);
             $artista = $this->model->get($id);
-            $this->view->response($artista,201);
+            $this->view->response($artista, 201);
         }
     }
 
-    public function deleteArtista($params = null){//a partir de un id elimina un artista
+    public function deleteArtista($params = null)
+    { //a partir de un id elimina un artista
         $id = $params[':ID'];
 
         $artista = $this->model->get($id);
-        if($artista){
+        if ($artista) {
             $this->model->delete($id);
             $this->view->response($artista);
-        }else{
+        } else {
             $this->view->response("La tarea con el id=$id no existe", 404);
         }
-        
-
     }
     // public function getIdsByDisco(){//Funcion utilizada  para el formulario de alta este
     //     session_start();
@@ -112,5 +111,5 @@ class artistasController
 
 
 
-    
+
 }
