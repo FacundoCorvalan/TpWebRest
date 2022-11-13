@@ -1,95 +1,67 @@
-http://localhost/TpEspecialRest/api/artistas/  <!--traer todos los artistas-->
-http://localhost/TpEspecialRest/api/artistas?sort=nacionalidad&order=asc <!--traer los artistas ordenados por algun valor de la tabla(sort) de forma asc o desc (order)-->
-http://localhost/TpEspecialRest/api/artistas?order=desc <!--Traer los artistas solo ordenados por su nombre en orden asc o desc(order)-->
-http://localhost/TpEspecialRest/api/artistas/2   //id existente 200 ok
-http://localhost/TpEspecialRest/api/artistas/1   //id no existe 404 not found
-http://localhost/TpEspecialRest/api/artistas?order=desc //ordenar descendentemente
-
-
-filtro
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense  ejemplo para usar
-La API Rest debe ser RESTful |*|
-Debe tener al menos un servicio que liste (GET) una colección entera de entidades. |*|
-El servicio que lista una colección entera debe poder ordenarse opcionalmente por al menos un campo de la tabla, de manera ascendente o descendente.
-Debe tener al menos un servicio que obtenga (GET) una entidad determinada por su ID.|*|
-Debe tener al menos un servicio para agregar o modificar datos (POST o PUT)|*|
-La API Rest debe manejar de manera adecuada al menos los siguientes códigos de error (200, 201, 400 y 404)|*|
-
-
-GET
-Coleccion de los metodos get del listado de artista para filtrar u ordenar
-
-GET
-http://localhost/TpEspecialRest/api/artistas
-http://localhost/TpEspecialRest/api/artistas
-getAll - devolver el listado completo de artistas
-
-GET
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense&sort=id&order=asc
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense&sort=id&order=asc
-Get - filtrado por campo y ordenado por campo asc o desc
-
-
-Query Params
-campo nacionalidad
-valor
-estadounidense
-sort
-id
-order
-asc
-GET
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense&sort=fecha_nacimiento
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense&sort=fecha_nacimiento
-GET - listado de artista filtrado y ordenado por campo de forma ascendente por defecto
-
-Query Params
-campo
-nacionalidad
-valor
-estadounidense
-sort
-fecha_nacimiento
-GET
-http://localhost/TpEspecialRest/api/artistas?sort=nombre_artista&order=desc
-http://localhost/TpEspecialRest/api/artistas?sort=nombre_artista&order=desc
-GET - listado de artistas ordenado por campo y de forma ascendente o descendente
-
-Query Params
-sort
-nombre_artista
-order
-desc
-GET
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense
-http://localhost/TpEspecialRest/api/artistas?campo=nacionalidad&valor=estadounidense
-GET - Listado de artistas filtrado por campo
-
-Query Params
-campo
-nacionalidad
-valor
-estadounidense
-GET
-http://localhost/TpEspecialRest/api/artistas?sort=id
-http://localhost/TpEspecialRest/api/artistas?sort=id
-GET - Listado de artistas ordenado por campo ascendente por defecto
-
-Query Params
-sort
-id
-GET
-http://localhost/TpEspecialRest/api/artistas/2
-http://localhost/TpEspecialRest/api/artistas/2
-GET - artista individual traido por id
-
-# Api de listado de artistas
-***
-
+# Api rest de un listado de artistas
 ## Indice
 1. [Metodos get](#metodos-get)
+2. [Metodo post](#metodo-post)
+3. [Metodo delete](#metodo-delete)
 
+### Metodos get
+***
+>Listado de metodos para obtener el listado de artistas filtrados y/o ordenados por campo u obtener un artista en especifico.
 
+**Valores validos**
+-
+>Valores permitidos para los metodos get.
+* campo: id, nombre_artista, nacionalidad, fecha_nacimiento, informacion.
+* valor: valores validos o existentes en los campos.
+* sort: id, nombre_artista, nacionalidad, fecha_nacimiento, informacion.
+* order: asc o desc (ascendente o descendente).
 
-## Usage
+>getAll - devolver el listado completo de artistas
+```
+http://localhost/TpEspecialRest/api/artistas
+```
+
+>get filtrado y ordenado
+```
+http://localhost/TpEspecialRest/api/artistas?campo=CampoTabla&valor=valorAtributo&sort=CampoTabla&order=orden
+```
+>get filtrado y ordenado por campo de forma ascendente por defecto.
+```
+http://localhost/TpEspecialRest/api/artistas?campo=campoTabla&valor=valorAtributo&sort=campoTabla
+```
+
+>get listado ordenado ascendente o descendente
+```
+http://localhost/TpEspecialRest/api/artistas?sort=campoTabla&order=orden
+```
+>get listado ordenado por campo de forma ascendente por defecto
+```
+http://localhost/TpEspecialRest/api/artistas?sort=id
+```
+>get artista individual por id
+http://localhost/TpEspecialRest/api/artistas/:id
+
+***
+### METODO POST
+***
+Metodo para insertar nuevos artistas a partir del body no es necesario especificar id.
+```
+http://localhost/TpEspecialRest/api/artistas
+```
+```
+    {
+        "nombre_artista": "nombre",
+        "fecha_nacimiento": "2022-10-04",
+        "nacionalidad": "nacionalidad",
+        "informacion": "info o descripcion"
+    }
+```
+***
+METODO DELETE
+***
+Metodo para eliminar artistas a partir de un id.
+
+```
+http://localhost/TpEspecialRest/api/artistas/:ID
+```
 

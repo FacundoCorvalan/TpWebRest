@@ -1,7 +1,6 @@
 <?php
 require_once './app/model/artistasModel.php';
 require_once './app/view/artistasView.php';
-require_once './app/helpers/auth.helper.php';
 
 class artistasController
 {
@@ -27,6 +26,7 @@ class artistasController
     public function getArtistas($params = null){
 
         /* Una lista blanca de valores permitidos para los parámetros de consulta. */
+        /*if(in_array) verifica si un valor existe en el arreglo*/
         $whiteList = array("id", "nombre_artista", "fecha_nacimiento", "nacionalidad", "informacion", "asc", "desc");
         $mensaje = "Inserte valores validos en la url";
         $codigo = 400;
@@ -140,29 +140,5 @@ class artistasController
             $this->view->response("La tarea con el id=$id no existe", 404);
         }
     }
-    // public function getIdsByDisco(){//Funcion utilizada  para el formulario de alta este
-    //     session_start();
-    //     $datos_disco = $this->model->artistaJoinDisco();
-    //     $this->view->getIdArtistas($datos_disco);
-    // }
-
-    // public function formEditar($id){//Funcion utilizada  para el formulario de modificar, obtiene el id del artista para asi poder utilizarlo en el select
-    //     $authHelper = new AuthHelper();
-    //     $authHelper->checkLoggedIn();
-    //     $datos_disco = $this->model->artistaJoinDisco();
-    //     $this->view->formModifyDiscos($datos_disco,$id);
-
-    // }
-
-    // public function formEditarArtista($id){//Formulario para editar artistas
-    //     $authHelper = new AuthHelper();
-    //     $authHelper->checkLoggedIn();
-    //     $datosArtistas = $this->model->getListArtistas();
-    //     $this->view->formModifyArtistas($datosArtistas,$id);
-    // }
-
-
-
-
 
 }

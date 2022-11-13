@@ -1,10 +1,10 @@
 <?php
-require_once './libs/smarty-4.2.1/libs/Smarty.class.php';
 
 class artistasView{
 
 
     public function response($data, $status = 200) {
+/* Establecer el encabezado de la respuesta para que sea json. */
         header("Content-Type: application/json");
         header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
         
@@ -12,6 +12,13 @@ class artistasView{
         echo json_encode($data);
     }
 
+    /**
+     * Toma un código de estado como argumento y devuelve el mensaje de estado correspondiente.
+     * 
+     * @param code El código de estado HTTP
+     * 
+     * @return El código de estado de la solicitud.
+     */
     private function _requestStatus($code){
         $status = array(
           200 => "OK",
