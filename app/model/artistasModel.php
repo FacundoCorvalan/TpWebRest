@@ -7,19 +7,25 @@ class artistasModel{
         $this->db = new PDO('mysql:host=localhost;'.'dbname=db_artistas;charset=utf8', 'root', '');
     }
 
-    public function getAll($sort=null,$order=null){
-        if($sort!=null && $order!=null){
-            $query = $this->db->prepare("SELECT * FROM `artistas` ORDER BY `artistas`.`$sort` $order");
-            
-        }else if($sort==null && $order!=null){
-            $query = $this->db->prepare("SELECT * FROM `artistas` ORDER BY `artistas`.`nombre_artista` $order");
-        }else{
-            $query = $this->db->prepare("SELECT * FROM `artistas`");
-
+    public function getAll($campo=null,$valor=null,$sort=null,$order=null){
+        // if($sort!=null && $order!=null){
+        ////SELECT * FROM `artistas` WHERE `nacionalidad` = "estadounidense" ORDER BY `id` DESC
+        if($campo!=null && $valor!=null && $sort!=null && $order!=null){
+        $query = $this->db->prepare("SELECT * FROM `artistas` WHERE $campo = ? ORDER BY `artistas`.`$sort` $order");
+        $query->execute([$valor]);
+        }else if($campo!=null && $valor!=null){
+            $query = $this->db->prepare("SELECT * FROM `artistas` WHERE $campo = ?");
+            $query->execute([$valor]);
+        }else if($sort!=null && $order!=null){
+            $query = $this->db->prepare("SELECT * FROM `artistas` ORDER BY $sort  $order");
+            $query->execute();
+        }
+        else{
+             $query = $this->db->prepare("SELECT * FROM `artistas`");
+             $query->execute();
         }
            
                     
-        $query->execute();
         $artistas = $query->fetchAll(PDO::FETCH_OBJ);
         return $artistas;
     }
@@ -54,13 +60,13 @@ class artistasModel{
         $query->execute([$id]);
     }
         
-    public function order(){
-        //SELECT * FROM `artistas` ORDER BY `artistas`.`nombre_artista` ASC
+    public function filter($campo, $valor){
+        //SELECT * FROM `artistas` WHERE `nacionalidad` = "estadounidense";
+        $query = $this->db->prepare("SELECT * FROM `artistas` WHERE $campo = ?");
 
-        $query = $this->db->prepare("SELECT * FROM `artistas` ORDER BY `artistas`.`nombre_artista` ASC");
-        $query->execute();
-        $artistasOrdenados = $query->fetchAll(PDO::FETCH_OBJ);
-        return $artistasOrdenados;
+        $query->execute([$valor]);
+        $artistasFiltrados = $query->fetchAll(PDO::FETCH_OBJ);
+        return $artistasFiltrados;
     }
     
 }

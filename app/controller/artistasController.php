@@ -24,28 +24,81 @@ class artistasController
     }
 
 
-    public function getArtistas($params = null)
-    {
+    public function getArtistas($params = null){
 
+        /* Una lista blanca de valores permitidos para los parámetros de consulta. */
+        $whiteList = array("id", "nombre_artista", "fecha_nacimiento", "nacionalidad", "informacion", "asc", "desc");
+        $mensaje = "Inserte valores validos en la url";
+        $codigo = 400;
         try {
-            if (!empty($_GET['sort']) && !empty($_GET['order'])) {
+            if (!empty($_GET['campo']) && !empty($_GET['valor']) && !empty($_GET['sort']) && !empty($_GET['order'])) { //filtro y orden
+                $campo = strtolower($_GET['campo']);
+                $valor = strtolower($_GET['valor']);
                 $sort = strtolower($_GET['sort']);
                 $order = strtolower($_GET['order']);
-                $artistas = $this->model->getAll($sort, $order);
-            } else if (empty($_GET['sort']) && !empty($_GET['order'])) {
-                $order = strtolower($_GET['order']);
-                var_dump($order);
-                $artistas = $this->model->getAll(null, $order);
-            } else if (!empty($_GET['sort']) && empty($_GET['order'])) { //por defecto imprime por campo en orden
+
+                if (in_array($campo, $whiteList) && in_array($sort, $whiteList) && in_array($order, $whiteList)) {
+                    echo "filtro de $campo = $valor y ordenado $sort - $order";
+                    $artistaFiltrado = $this->model->getAll($campo, $valor, $sort, $order);
+                    $this->view->response($artistaFiltrado);
+                } else {
+                    $this->view->response($mensaje, $codigo);
+                }
+
+            } else if (!empty($_GET['campo']) && !empty($_GET['valor']) && !empty($_GET['sort']) ) { //filtro y orden asc por default
+                $campo = strtolower($_GET['campo']);
+                $valor = strtolower($_GET['valor']);
                 $sort = strtolower($_GET['sort']);
-                $order = "asc";
-                $artistas = $this->model->getAll($sort, $order);
+
+                if(in_array($campo, $whiteList) && in_array($sort, $whiteList) && $_GET['order']==null){
+                    echo "filtro de $campo = $valor  y ordenado $sort - asc por defecto";
+                    $artistaFiltrado = $this->model->getAll($campo, $valor, $sort, "asc");
+                    $this->view->response($artistaFiltrado);
+                }else{
+                    $this->view->response($mensaje, $codigo);
+
+                }
+
+            } else if (!empty($_GET['campo']) && !empty($_GET['valor']) ) { //filtro
+                $campo = strtolower($_GET['campo']);
+                $valor = strtolower($_GET['valor']);
+
+                if(in_array($campo, $whiteList) && $_GET['sort']==null && $_GET['order']==null){
+                    echo "solo filtro de $campo = $valor";
+                    $artistaFiltrado = $this->model->getAll($campo, $valor, null, null);
+                    $this->view->response($artistaFiltrado);
+                }else{
+                    $this->view->response($mensaje, $codigo);
+
+                }
+            } else if (!empty($_GET['sort']) && !empty($_GET['order'])) { //orden
+                $sort = strtolower($_GET['sort']);
+                $order = strtolower($_GET['order']);
+                if($_GET['campo']==null && $_GET['valor']==null && in_array($sort,$whiteList)&&in_array($order,$whiteList)){
+                    echo "solo ordenado por $sort - $order";
+                    $artistas = $this->model->getAll(null, null, $sort, $order);
+                    $this->view->response($artistas);
+                }else{
+                    $this->view->response($mensaje, $codigo);
+
+                }
+            } else if (!empty($_GET['sort'])) { //campo por orden asc por default
+                $sort = strtolower($_GET['sort']);
+                if(in_array($sort,$whiteList)){
+                    echo "Solo ordenado por campo $sort asc por default";
+                    $artistas = $this->model->getAll(null, null, $sort, "asc"); //asc como valor por defecto
+                    $this->view->response($artistas);
+                }else{
+                    $this->view->response($mensaje, $codigo);
+
+                }
             } else {
-                $artistas = $this->model->getAll();
+                    echo "sin querys";
+                    $artistas = $this->model->getAll();
+                    $this->view->response($artistas);
             }
-            $this->view->response($artistas);
         } catch (Exception $e) {
-            $this->view->response("Inserte valores validos", 400);
+            $this->view->response($mensaje, $codigo);
         }
     }
 
